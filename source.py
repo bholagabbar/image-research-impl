@@ -319,7 +319,7 @@ parser.add_argument('--target', nargs='?', default='resources/images/woman_darkh
 parser.add_argument('--msg', nargs='?', default='hello')
 args = parser.parse_args()
 # Load Images
-input_image = cv2.imread('resources/images/lena_gray_512.tif', cv2.CV_LOAD_IMAGE_GRAYSCALE)
-target_image = cv2.imread('resources/images/woman_darkhair.tif', cv2.CV_LOAD_IMAGE_GRAYSCALE)
+input_image = cv2.imread(args.input, cv2.CV_LOAD_IMAGE_GRAYSCALE)
+target_image = cv2.imread(args.target, cv2.CV_LOAD_IMAGE_GRAYSCALE)
 # Run Driver
 main(input_image, target_image, args.msg)
