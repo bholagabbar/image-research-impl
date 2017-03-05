@@ -1,6 +1,7 @@
 import cv2
 import math
 import binascii
+import argparse
 import numpy as np
 from matplotlib import pyplot as plt
 
@@ -217,17 +218,16 @@ def embed_msg_and_mod_transformed_img(img, msg):
     for i in range(len(img)):
         for j in range(len(img[i])):
             if cnt < len(msg):
+                # See encoding_logic.txt file for logic
                 curr_bit = int(msg[cnt])
                 curr_pixel = img[i][j]
-                # See encoding_logic.txt file for logic
                 # j is col index, curr_pixel and curr_bit as is
                 if ((curr_bit == 1 and odd(j) and odd(curr_pixel)) or
                         (curr_bit == 1 and even(j) and even(curr_pixel)) or
                         (curr_bit == 0 and odd(j) and even(curr_pixel)) or
                         (curr_bit == 0 and even(j) and odd(curr_pixel))):
+                    # No change in image bit
                     pair_changes.append((i, j, False))
-                # No change in image bit
-                # print 'one', curr_pixel, curr_bit
                 else:
                     pair_changes.append((i, j, True))
                     # Add 1 to pixel
@@ -291,27 +291,20 @@ def restore_to_input_img(tf_img, pair_mapping, tf_block_data):
 '''
 
 
-def main():
-    # Read Input (read in CLI arguments later)
-    ip_img = cv2.imread('resources/images/lena_gray_512.tif', cv2.CV_LOAD_IMAGE_GRAYSCALE)
-    tg_img = cv2.imread('resources/images/woman_darkhair.tif', cv2.CV_LOAD_IMAGE_GRAYSCALE)
-    msg = 'hello'
-
-    # Execute Flow of Phases
-
+# Execute Flow of Phases
+def main(ip_img, tg_img, msg):
     # Transform Image
     tf_img, pair_mapping, tf_block_data = transform_input_image(ip_img, tg_img)
     # Embed Message in Image, get Location Matrix values while modding Transformed Image
     enc_tf_img, pair_changes = embed_msg_and_mod_transformed_img(tf_img, msg)
     # Retrieve Message from Image, restore to Original Transformed Image
-    dec_tf_img, dec_txt_msg = extract_msg_and_restore_to_transformed_img(enc_tf_img, pair_changes)
+    dec_tf_img, dec_txt_msg = extract_msg_and_restore_to_transformed_img(enc_tf_img.copy(), pair_changes)
     # Restore Original image
-    res_ip_img = restore_to_input_img(dec_tf_img, pair_mapping, tf_block_data)
-
+    res_ip_img = restore_to_input_img(dec_tf_img.copy(), pair_mapping, tf_block_data)
+    # Plot resultant images
     img_list = [ip_img, tg_img, tf_img, enc_tf_img, dec_tf_img, res_ip_img]
-    img_title_list = ['Input Img', 'Target Img', 'Transformed Img', 'Encoded Transformed Img',
-                      'Decoded Transformed Img', 'Restored Input Image']
-
+    img_title_list = ['Input', 'Target', 'Transformed', 'Encoded Transformed',
+                      'Decoded Transformed', 'Restored Input']
     for i in xrange(len(img_list)):
         plt.subplot(2, 3, i + 1), plt.imshow(img_list[i], 'gray')
         plt.title(img_title_list[i])
@@ -319,5 +312,14 @@ def main():
     plt.show()
 
 
+# Take Input
+parser = argparse.ArgumentParser()
+parser.add_argument('--input', nargs='?', default='resources/images/lena_gray_512.tif')
+parser.add_argument('--target', nargs='?', default='resources/images/woman_darkhair.tif')
+parser.add_argument('--msg', nargs='?', default='hello')
+args = parser.parse_args()
+# Load Images
+input_image = cv2.imread('resources/images/lena_gray_512.tif', cv2.CV_LOAD_IMAGE_GRAYSCALE)
+target_image = cv2.imread('resources/images/woman_darkhair.tif', cv2.CV_LOAD_IMAGE_GRAYSCALE)
 # Run Driver
-main()
+main(input_image, target_image, args.msg)
