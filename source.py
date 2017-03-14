@@ -1,9 +1,9 @@
-import cv2
-import math
+from matplotlib import pyplot as plt
+import numpy as np
 import binascii
 import argparse
-import numpy as np
-from matplotlib import pyplot as plt
+import math
+import cv2
 
 '''UTILITY FUNCTIONS
 '''
@@ -47,8 +47,8 @@ def break_ip_img_into_blocks_with_data(image):
     width, height = image.shape
     blocks = dict()
     block_cnt = 0
-    for y in range(0, height, 4):
-        for x in range(0, width, 4):
+    for y in xrange(0, height, 4):
+        for x in xrange(0, width, 4):
             curr_block = image[y:y + 4, x:x + 4]
             # Storing 1. count 2. image block 3. SD for block 4. Mean for block
             blocks[block_cnt] = (block_cnt, curr_block, np.std(curr_block), np.mean(curr_block))
@@ -161,8 +161,8 @@ def break_tg_img_into_blocks(image):
     width, height = image.shape
     blocks = dict()
     block_cnt = 0
-    for y in range(0, height, 4):
-        for x in range(0, width, 4):
+    for y in xrange(0, height, 4):
+        for x in xrange(0, width, 4):
             curr_block = image[y:y + 4, x:x + 4]
             blocks[block_cnt] = curr_block
             block_cnt += 1
@@ -180,7 +180,7 @@ def build_image_from_blocks(img_blocks):
 
 
 def display_image(img):
-    cv2.imshow('Input Image', img)
+    cv2.imshow('Image', img)
     cv2.waitKey()
     cv2.destroyAllWindows()
 
@@ -215,8 +215,8 @@ def embed_msg_and_mod_transformed_img(img, msg):
     msg = text_to_bits(msg)
     pair_changes = list()
     cnt = 0
-    for i in range(len(img)):
-        for j in range(len(img[i])):
+    for i in xrange(len(img)):
+        for j in xrange(len(img[i])):
             if cnt < len(msg):
                 # See encoding_logic.txt file for logic
                 curr_bit = int(msg[cnt])
@@ -292,7 +292,10 @@ def restore_to_input_img(tf_img, pair_mapping, tf_block_data):
 
 
 # Execute Flow of Phases
-def main(ip_img, tg_img, msg):
+def main(ip_img_path, tg_img_path, msg, do_return=False, show_plot=True):
+    # Load Images
+    ip_img = cv2.imread(ip_img_path, cv2.CV_LOAD_IMAGE_GRAYSCALE)
+    tg_img = cv2.imread(tg_img_path, cv2.CV_LOAD_IMAGE_GRAYSCALE)
     # Transform Image
     tf_img, pair_mapping, tf_block_data = transform_input_image(ip_img, tg_img)
     # Embed Message in Image, get Location Matrix values while modding Transformed Image
@@ -305,21 +308,22 @@ def main(ip_img, tg_img, msg):
     img_list = [ip_img, tg_img, tf_img, enc_tf_img, dec_tf_img, res_ip_img]
     img_title_list = ['Input', 'Target', 'Transformed', 'Encoded Transformed',
                       'Decoded Transformed', 'Restored Input']
-    for i in xrange(len(img_list)):
-        plt.subplot(2, 3, i + 1), plt.imshow(img_list[i], 'gray')
-        plt.title(img_title_list[i])
-        plt.xticks([]), plt.yticks([])
-    plt.show()
+    if show_plot:
+        for i in xrange(len(img_list)):
+            plt.subplot(2, 3, i + 1), plt.imshow(img_list[i], 'gray')
+            plt.title(img_title_list[i])
+            plt.xticks([]), plt.yticks([])
+        plt.show()
+    if do_return:
+        return ip_img, tg_img, tf_img, enc_tf_img, dec_tf_img, res_ip_img
 
 
 # Take Input
 parser = argparse.ArgumentParser()
-parser.add_argument('--input', nargs='?', default='resources/images/lena_gray_512.tif')
-parser.add_argument('--target', nargs='?', default='resources/images/woman_darkhair.tif')
+# Lena and Pirate as default for good res.
+parser.add_argument('--input', nargs='?', default='resources/images/71.pgm')
+parser.add_argument('--target', nargs='?', default='resources/images/12.pgm')
 parser.add_argument('--msg', nargs='?', default='hello')
 args = parser.parse_args()
-# Load Images
-input_image = cv2.imread(args.input, cv2.CV_LOAD_IMAGE_GRAYSCALE)
-target_image = cv2.imread(args.target, cv2.CV_LOAD_IMAGE_GRAYSCALE)
 # Run Driver
-main(input_image, target_image, args.msg)
+# imgs = main(ip_img_path=args.input, tg_img_path=args.target, msg=args.msg, show_plot=True, do_return=True)
