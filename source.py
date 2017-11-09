@@ -306,8 +306,8 @@ def main(ip_img_path, tg_img_path, msg, do_return=False, show_plot=True):
     res_ip_img = restore_to_input_img(dec_tf_img.copy(), pair_mapping, tf_block_data)
     # Plot resultant images
     img_list = [ip_img, tg_img, tf_img, enc_tf_img, dec_tf_img, res_ip_img]
-    img_title_list = ['Input', 'Target', 'Transformed', 'Encoded Transformed',
-                      'Decoded Transformed', 'Restored Input']
+    img_title_list = ['Input', 'Target', 'Transformed', 'Transformed Embedded With Message',
+                      'Disembedded Transformed', 'Restored Input']
     if show_plot:
         for i in xrange(len(img_list)):
             plt.subplot(2, 3, i + 1), plt.imshow(img_list[i], 'gray')

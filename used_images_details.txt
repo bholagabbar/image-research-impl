@@ -1,0 +1,75 @@
+PAIRINGS:
+
+1. 1_32  
+2. 2_12  
+3. 5_88  
+4. 20_47 
+5. 23_13 
+6. 24_26 
+7. 25_71 
+8. 28_15 
+9. 34_36 
+10. 37_21 
+11. 38_51 
+12. 40_31 
+13. 58_55 
+14. 72_39 
+15. 73_48 
+16. 75_45 
+17. 86_76 
+18. 96_35 
+19. 104_105 
+20. 106_102 
+
+IMAGES:	
+
+1 - Barbara
+32 - Butterflyfish
+2 - Gold Hill
+12 - Man
+5 - Truck
+88 - Zelda
+20 - Scenery
+47 - Mandrill
+23 - Lighthouse
+13- House
+24 - Mosque
+26 - Heron
+25 - Golden Gate Bridge	
+71 - Lena
+28 - NYC
+15 - Lake
+34 - Owl
+36 - Shack
+37 - Barn
+21 - Lakehouse
+38 - Acropolis
+51 - Airport Aerial
+40 - Plains
+31 - Dutchman Park
+58 - Elaine
+55 - Toys
+72 - Atmosphere
+39 - Bee
+73 - Sky
+48 - Boats
+75 - Water Transport
+45 - Sailboat
+86 - Office
+76 - SAR
+93 - Schooner
+35 - Cynthia
+104 - Salzburg
+105 - Anhinga
+106 - Crowd
+102 - Karlheinz
+
+
+
+DATASETS:
+
+http://decsai.ugr.es/cvg/CG/base.htm
+https://homepages.cae.wisc.edu/~ece533/images/
+http://www.hlevkin.com/06testimages.htm
+https://minghsiehee.usc.edu/volume-3-miscellaneous/
+http://perso.ensta-paristech.fr/~manzaner/Images/GRIS/
